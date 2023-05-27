@@ -116,13 +116,13 @@ def hystologyOnkNonOnk():
 def sizeOnk():
     sns.histplot(data=df, x=avgSize, bins=20, color="lightblue", edgecolor="white")
     plt.ylabel("Количество пациентов")
-    plt.title("Распределение по размеру злокачественных образований")
+    plt.title("Распределение по размеру новообразований")
     plt.show()
 
 
 def sizeOnkNonOnk():
     plt.ylabel("Количество пациентов")
-    plt.title("Распределение по размеру доброкачественных образований")
+    plt.title("Распределение по размеру новообразований")
     g = sns.histplot(data=df, x=avgSize, hue=onk, bins=20, palette="Pastel1", edgecolor="white")
     red_patch = mpatches.Patch(color=[252 / 255, 217 / 255, 214 / 255], label="Онк")
     blue_patch = mpatches.Patch(color=[216 / 255, 229 / 255, 240 / 255], label="Неонк")

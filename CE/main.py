@@ -25,18 +25,18 @@ if __name__ == "__main__":
     # F.hystologyOnkNonOnk()
     print("-----------------------")
 
-    # F.sizeOnk()
+    F.sizeOnk()
     # F.sizeOnkNonOnk()
     # F.sizeDivOnk()
 
     print("-----------------------")
 
-    #F.onkSuv("SUVочаг/SUVпул_18F")
+    # F.onkSuv("SUVочаг/SUVлегк_18F")
     # F.onkSuv_proportion_of_smokers("SUVочаг/SUVлегк_18F")
     # F.smokeOnkSuv("SUVочаг/SUVлегк_18F")
 
     print("-----------------------")
 
-    F.onkSuv("SUVочаг/SUVпул_11С")
-    F.onkSuv_proportion_of_smokers("SUVочаг/SUVпул_11С")
-    F.smokeOnkSuv("SUVочаг/SUVпул_11С")
+    # F.onkSuv("SUVочаг/SUVпул_11С")
+    # F.onkSuv_proportion_of_smokers("SUVочаг/SUVпул_11С")
+    # F.smokeOnkSuv("SUVочаг/SUVпул_11С")
