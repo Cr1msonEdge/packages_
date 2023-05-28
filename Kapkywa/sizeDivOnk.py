@@ -52,17 +52,17 @@ axes[0].set_title("Неонкология")
 axes[1].set_title("Онкология")
 
 colors = [[252 / 255, 198 / 255, 194 / 255], [198 / 255, 217 / 255, 234 / 255], [216 / 255, 240 / 255, 211 / 255],
-          [1, 0, 0], [198 / 255, 233 / 255, 217 / 255], [253 / 255, 217 / 255, 193 / 255],
-          [216 / 255, 233 / 255, 237 / 255], [1, 0, 0]]
+          [230 / 255, 216 / 255, 234 / 255], [198 / 255, 233 / 255, 217 / 255], [253 / 255, 217 / 255, 193 / 255],
+          [216 / 255, 233 / 255, 237 / 255], [246 / 255, 215 / 255, 234 / 255]]
 
 g = sns.histplot(ax=axes[0], data=nonOnkDF, x=avgSize, hue="Deviation", bins=20, multiple="dodge", shrink=0.8, palette="Pastel1", edgecolor="black")
 patches = [mpatches.Patch(color=colors[i], label=getGap_index(gapsNonOnk, i)) for i in range(len(gapsNonOnk) - 1)]
-g.legend(handles=patches, title="Процент отклонения")
+g.legend(handles=patches, title="Процент изменения от среднего")
 g.set(xlabel=None, ylabel=None)
 
 g1 = sns.histplot(ax=axes[1], data=onkDF, x=avgSize, hue="Deviation", bins=20, multiple="dodge", shrink=0.8, palette="Pastel2", edgecolor="black")
 patches1 = [mpatches.Patch(color=colors[i + len(gapsNonOnk) - 1], label=getGap_index(gapsOnk, i)) for i in range(len(gapsOnk) - 1)]
-g1.legend(handles=patches1, title="Процент отклонения")
+g1.legend(handles=patches1, title="Процент изменения от среднего")
 g1.set(xlabel=None, ylabel=None)
 
 fig.supxlabel("Средний размер, мм")
