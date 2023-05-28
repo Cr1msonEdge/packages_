@@ -128,14 +128,14 @@ def sizeDivOnk():
     g = sns.histplot(ax=axes[0], data=nonOnkDF, x=avgSize, hue="Deviation", bins=20, multiple="dodge", shrink=0.8,
                      palette="Pastel1", edgecolor="black")
     patches = [mpatches.Patch(color=colors[i], label=getGap_index(gapsNonOnk, i)) for i in range(len(gapsNonOnk) - 1)]
-    g.legend(handles=patches, title="Процент отклонения")
+    g.legend(handles=patches, title="Процент изменения от среднего")
     g.set(xlabel=None, ylabel=None)
 
     g1 = sns.histplot(ax=axes[1], data=onkDF, x=avgSize, hue="Deviation", bins=20, multiple="dodge", shrink=0.8,
                       palette="Pastel2", edgecolor="black")
     patches1 = [mpatches.Patch(color=colors[i + len(gapsNonOnk) - 1], label=getGap_index(gapsOnk, i)) for i in
                 range(len(gapsOnk) - 1)]
-    g1.legend(handles=patches1, title="Процент отклонения")
+    g1.legend(handles=patches1, title="Процент изменения от среднего")
     g1.set(xlabel=None, ylabel=None)
 
     fig.supxlabel("Средний размер, мм")
