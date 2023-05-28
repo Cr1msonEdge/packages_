@@ -23,6 +23,9 @@ sex = "Пол"
 minSize = "Мин. размер, мм"
 maxSize = "Макс. размер, мм"
 avgSize = "Сред. размер, мм"
+suvOchSizeF = "SUVочаг/размер_18F"
+suvOchLungF = "SUVочаг/SUVлегк_18F"
+suvOchPoolF = "SUVочаг/SUVпул_18F"
 
 df = pd.read_excel("Data_exam.xlsx", header=1)
 
@@ -144,5 +147,40 @@ def sizeDivOnk():
     fig.suptitle("Распределение изменения размеров образований от их средней величины")
     plt.show()
 
+def suvHyst():
+    tmpDF = df[[hyst, suvOchSizeF, suvOchLungF, suvOchPoolF]]
 
-sizeDivOnk()
+    suvMeanNonOnk = pd.DataFrame({hyst: [hystDict[x] for x in hystNonOnk],
+                                  suvOchSizeF: [tmpDF[tmpDF[hyst] == x][suvOchSizeF].mean() for x in hystNonOnk],
+                                  suvOchLungF: [tmpDF[tmpDF[hyst] == x][suvOchLungF].mean() for x in hystNonOnk],
+                                  suvOchPoolF: [tmpDF[tmpDF[hyst] == x][suvOchPoolF].mean() for x in hystNonOnk]})
+    suvMeanNonOnk = pd.melt(suvMeanNonOnk, id_vars=[hyst], value_vars=[suvOchSizeF, suvOchLungF, suvOchPoolF])
+
+    suvMeanOnk = pd.DataFrame({hyst: [hystDict[x] for x in hystOnk],
+                               suvOchSizeF: [tmpDF[tmpDF[hyst] == x][suvOchSizeF].mean() for x in hystOnk],
+                               suvOchLungF: [tmpDF[tmpDF[hyst] == x][suvOchLungF].mean() for x in hystOnk],
+                               suvOchPoolF: [tmpDF[tmpDF[hyst] == x][suvOchPoolF].mean() for x in hystOnk]})
+    suvMeanOnk = pd.melt(suvMeanOnk, id_vars=[hyst], value_vars=[suvOchSizeF, suvOchLungF, suvOchPoolF])
+
+    colors = [[252 / 255, 198 / 255, 194 / 255], [198 / 255, 217 / 255, 234 / 255], [216 / 255, 240 / 255, 211 / 255]]
+
+    fig, axes = plt.subplots(1, 2)
+    axes[0].set_title("Неонкология")
+    axes[1].set_title("Онкология")
+    g1 = sns.barplot(ax=axes[0], data=suvMeanNonOnk, x=hyst, y="value", hue="variable", palette="Pastel1")
+    g2 = sns.barplot(ax=axes[1], data=suvMeanOnk, x=hyst, y="value", hue="variable", palette="Pastel1")
+    g1.set_xticklabels(labels=[hystDict[x] for x in hystNonOnk], rotation=45, horizontalalignment='right')
+    g2.set_xticklabels(labels=[hystDict[x] for x in hystOnk], rotation=45, horizontalalignment='right')
+    g1.set(ylim=(0.0, 32.0), xlabel="", ylabel="")
+    g2.set(ylim=(0.0, 32.0), xlabel="", ylabel="")
+    fig.supxlabel(hyst)
+    fig.supylabel("Значение")
+    patches = [mpatches.Patch(color=colors[0], label=suvOchSizeF),
+               mpatches.Patch(color=colors[1], label=suvOchLungF),
+               mpatches.Patch(color=colors[2], label=suvOchPoolF)]
+    g1.legend(handles=patches, title="Соотношения")
+    g2.legend(handles=patches, title="Соотношения")
+
+    plt.show()
+
+suvHyst()
