@@ -26,8 +26,11 @@ avgSize = "Сред. размер, мм"
 suvOchSizeF = "SUVочаг/размер_18F"
 suvOchLungF = "SUVочаг/SUVлегк_18F"
 suvOchPoolF = "SUVочаг/SUVпул_18F"
+suvOchF = "SUVочаг_18F"
+suvOchC = "SUVочаг_11С"
 
 df = pd.read_excel("Data_exam.xlsx", header=1)
+
 
 def hystologyOnkNonOnk():
     patCount = "Количество пациентов"
@@ -41,6 +44,7 @@ def hystologyOnkNonOnk():
     sns.barplot(ax=axes[0], data=hystDfNonOnk, x=patCount, y=hyst, orient="h")
     sns.barplot(ax=axes[1], data=hystDfOnk, x=patCount, y=hyst, orient="h")
     plt.show()
+
 
 def smokeOnk():
     print(pd.pivot_table(df[[onk, smoke]], index=smoke, columns=onk, aggfunc=len))
@@ -56,10 +60,12 @@ def smokeOnk():
     # sns.histplot(data=tmpDF, x=age, hue="OnkSmoke", bins=12, multiple="dodge", shrink=0.9)
     # plt.show()
 
+
 def ageOnk():
     # sns.histplot(data=df, x="Возраст, лет", hue="Онк/Неонк", bins=10, multiple="dodge", shrink=0.8)
     sns.histplot(data=df, x="Возраст, лет", hue="Онк/Неонк", bins=20)
     plt.show()
+
 
 def ageSexOnk():
     tmpDF = df[[onk, sex, age]]
@@ -69,9 +75,11 @@ def ageSexOnk():
     sns.histplot(data=tmpDF, x=age, hue="OnkSex", bins=12, multiple="dodge", shrink=0.9)
     plt.show()
 
+
 def sizeOnk():
     sns.histplot(data=df, x=avgSize, bins=20)
     plt.show()
+
 
 def sizeOnkNonOnk(var):
     #fig, axes = plt.subplots(1, 2)
@@ -82,6 +90,7 @@ def sizeOnkNonOnk(var):
     #plt.show()
     sns.histplot(data=df, x=avgSize, hue=onk, bins=20)
     plt.show()
+
 
 def sizeDivOnk():
     def getGap(val, gapsArg):
@@ -147,6 +156,7 @@ def sizeDivOnk():
     fig.suptitle("Распределение изменения размеров образований от их средней величины")
     plt.show()
 
+
 def suvHyst():
     tmpDF = df[[hyst, suvOchSizeF, suvOchLungF, suvOchPoolF]]
 
@@ -183,4 +193,45 @@ def suvHyst():
 
     plt.show()
 
-suvHyst()
+
+def suvHystOchVal():
+    tmpDF = df[[hyst, suvOchF, suvOchC]]
+    newC = []
+    for i in range(len(tmpDF)):
+        newVal = tmpDF.iloc[i, 2]
+        if type(newVal) == str:
+            newVal = np.NaN
+        newC.append(newVal)
+    tmpDF.iloc[:, 2] = newC
+
+    suvMeanNonOnk = pd.DataFrame({hyst: [hystDict[x] for x in hystNonOnk],
+                                  suvOchF: [tmpDF[tmpDF[hyst] == x][suvOchF].dropna().mean() for x in hystNonOnk],
+                                  suvOchC: [tmpDF[tmpDF[hyst] == x][suvOchC].dropna().mean() for x in
+                                            hystNonOnk]}).fillna(0)
+    suvMeanNonOnk = pd.melt(suvMeanNonOnk, id_vars=[hyst], value_vars=[suvOchF, suvOchC])
+
+    suvMeanOnk = pd.DataFrame({hyst: [hystDict[x] for x in hystOnk],
+                               suvOchF: [tmpDF[tmpDF[hyst] == x][suvOchF].dropna().mean() for x in hystOnk],
+                               suvOchC: [tmpDF[tmpDF[hyst] == x][suvOchC].dropna().mean() for x in hystOnk]}).fillna(0)
+    suvMeanOnk = pd.melt(suvMeanOnk, id_vars=[hyst], value_vars=[suvOchF, suvOchC])
+
+    colors = [[252 / 255, 198 / 255, 194 / 255], [198 / 255, 217 / 255, 234 / 255]]
+
+    fig, axes = plt.subplots(1, 2)
+    axes[0].set_title("Неонкология")
+    axes[1].set_title("Онкология")
+    g1 = sns.barplot(ax=axes[0], data=suvMeanNonOnk, x=hyst, y="value", hue="variable", palette="Pastel1")
+    g2 = sns.barplot(ax=axes[1], data=suvMeanOnk, x=hyst, y="value", hue="variable", palette="Pastel1")
+    g1.set_xticklabels(labels=[hystDict[x] for x in hystNonOnk], rotation=45, horizontalalignment="right")
+    g2.set_xticklabels(labels=[hystDict[x] for x in hystOnk], rotation=45, horizontalalignment="right")
+    g1.set(ylim=(0.0, 14.5), xlabel="", ylabel="")
+    g2.set(ylim=(0.0, 14.5), xlabel="", ylabel="")
+    fig.supxlabel(hyst)
+    fig.supylabel("Значение")
+    patches = [mpatches.Patch(color=colors[0], label="18F"),
+               mpatches.Patch(color=colors[1], label="11C")]
+    g1.legend(handles=patches, title="SUV очаг")
+    g2.legend(handles=patches, title="SUV очаг")
+    plt.show()
+
+suvHystOchVal()
