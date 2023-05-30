@@ -30,9 +30,12 @@ suvOchF = "SUVочаг_18F"
 suvOchC = "SUVочаг_11С"
 struct = "Структура очага"
 structDict = ["Нет", "Кальцинаты", "Кавитация", "Кавитация + кальцинаты", "ВБ"]
+hystForChoose = [1, 2, 3, 4, 5, 7, 8, 9, 10, 16]
+outline = "Контуры"
+ochType = "Тип "
 
 df = pd.read_excel("Data_exam.xlsx", header=1)
-
+pd.set_option('display.max_columns', None)
 
 def hystologyOnkNonOnk():
     patCount = "Количество пациентов"
@@ -335,4 +338,42 @@ def structHyst():
     g2.legend(handles=patches, title="Структура очага")
     plt.show()
 
-structHyst()
+
+def hystChoose(s):
+    ill = -1
+    for i in hystForChoose:
+        if s == hystDict[i]:
+            ill = i
+            break
+    if ill == -1:
+        print("Некорректное наименование диагноза")
+        return
+    tmpDF = df[df[hyst] == ill]
+    print(s, "\n")
+    print("Всего пациентов:", len(tmpDF), "\n")
+    #print("Некурящие/Курящие:", len(tmpDF[tmpDF[smoke] == 0]), "/", len(tmpDF[tmpDF[smoke] == 1]))
+    #print("Мужчины/Женщины:", len(tmpDF[tmpDF[sex] == "м"]), "/", len(tmpDF[tmpDF[sex] == "ж"]))
+    table1 = pd.pivot_table(tmpDF[[sex, smoke]], index=smoke, columns=sex, aggfunc=len).fillna(0).astype(int)
+    table2 = pd.pivot_table(tmpDF[[outline, ochType]], index=ochType, columns=outline, aggfunc=len).fillna(0).astype(int)
+    print(table1, "\n")
+    print(table2, "\n")
+    fig, axes = plt.subplots(2, 2)
+    axes[0][0].set_title("Распределение по возрасту")
+    axes[0][1].set_title("Распределение по среднему размеру")
+    axes[1][0].set_title("Распределение по SUV очага (18F)")
+    g1 = sns.histplot(ax=axes[0][0], data=tmpDF, x=age, color=[252 / 255, 198 / 255, 194 / 255], edgecolor="white")
+    g2 = sns.histplot(ax=axes[0][1], data=tmpDF, x=avgSize, color=[252 / 255, 198 / 255, 194 / 255], edgecolor="white")
+    g3 = sns.histplot(ax=axes[1][0], data=tmpDF, x=suvOchF, color=[252 / 255, 198 / 255, 194 / 255], edgecolor="white")
+    g1.set(xlabel="", ylabel="Количество пациентов")
+    g2.set(xlabel="", ylabel="Количество пациентов")
+    g3.set(xlabel="", ylabel="Количество пациентов")
+    if len(tmpDF[suvOchC].dropna()) != 0:
+        axes[1][1].set_title("Распределение по SUV очага (11C)")
+        g4 = sns.histplot(ax=axes[1][1], data=tmpDF, x=suvOchC, color=[252 / 255, 198 / 255, 194 / 255], edgecolor="white")
+        g4.set(xlabel="", ylabel="Количество пациентов")
+    else:
+        fig.delaxes(axes[1][1])
+    fig.suptitle(s)
+    plt.show()
+
+hystChoose(hystDict[4])
