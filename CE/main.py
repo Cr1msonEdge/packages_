@@ -20,23 +20,32 @@ if __name__ == "__main__":
     # F.ageOnk()
 
     # F.ageSexOnk()
-    # F.cancerTendency("Аденокарцинома")
+    # F.illnessTendency("Аденокарцинома")
     # F.smokeOnk()
     # F.hystologyOnkNonOnk()
-    print("-----------------------")
+    # print("-----------------------")
 
-    F.sizeOnk()
+    # F.sizeOnk()
     # F.sizeOnkNonOnk()
     # F.sizeDivOnk()
 
-    print("-----------------------")
+    # print("-----------------------")
 
     # F.onkSuv("SUVочаг/SUVлегк_18F")
     # F.onkSuv_proportion_of_smokers("SUVочаг/SUVлегк_18F")
     # F.smokeOnkSuv("SUVочаг/SUVлегк_18F")
 
-    print("-----------------------")
+    # print("-----------------------")
 
     # F.onkSuv("SUVочаг/SUVпул_11С")
     # F.onkSuv_proportion_of_smokers("SUVочаг/SUVпул_11С")
     # F.smokeOnkSuv("SUVочаг/SUVпул_11С")
+
+    # print("-----------------------")
+    # F.suvHyst()
+    # F.suvHystOchVal()
+
+    # F.outlineType()
+    # F.structHyst()
+    # F.hystChoose("Аденокарцинома")
+    F.hystPat("Аденокарцинома")
